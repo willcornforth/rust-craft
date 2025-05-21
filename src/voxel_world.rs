@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use bevy::math::Vec3;
 use bevy::prelude::{Cuboid, Mesh};
 
 
@@ -17,7 +18,7 @@ pub(crate) struct VoxelWorld {
 }
 
 impl VoxelWorld {
-  fn new() -> Self {
+  pub(crate) fn new() -> Self {
     Self {
       chunks: HashMap::new(),
     }
@@ -54,7 +55,7 @@ impl Chunk {
     }
   }
 
-  pub(crate) fn generate_mesh(&self) -> Vec<Mesh> {
+  pub(crate) fn generate_mesh(&self) -> Vec<(Mesh, Vec3)> {
     let mut meshes = Vec::new();
 
     for x in 0..self.size {
@@ -67,7 +68,10 @@ impl Chunk {
             continue;
           }
 
-          meshes.push(Mesh::from(Cuboid::new(x as f32, y as f32, z as f32)));
+          meshes.push((
+            Mesh::from( Cuboid::new(1.0,1.0,1.0) ), 
+            Vec3::new(x as f32, y as f32, z as f32))
+          );
         }
       }
     }
