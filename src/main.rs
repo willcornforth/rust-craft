@@ -1,8 +1,10 @@
 mod voxel_world;
+mod camera;
 
 use voxel_world::{Chunk};
 use bevy::prelude::*;
 use rand::{rng, Rng, RngCore};
+use crate::camera::GameCamera;
 
 fn main() {
   println!("Starting application...");
@@ -19,18 +21,11 @@ fn setup(
   mut materials: ResMut<Assets<StandardMaterial>>,
   mut meshes: ResMut<Assets<Mesh>>
 ) {
-  let camera_transform = Transform::from_xyz(25.0, 5.0, 50.0)
-    .looking_at(Vec3::ZERO, Vec3::Y);
-
-  // Create a 3D camera.
-  commands.spawn((
-    Camera3d::default(),
-    camera_transform
-  ));
-
-  // Set up a point light for the scene.
-  commands.spawn((PointLight::default(), camera_transform));
-
+  // Create the camera and borrow the commands variable to spawn it.
+  let camera = GameCamera::new(Vec3::new(25.0, 5.0, 50.0));
+  camera.spawn(&mut commands);
+  
+  // Test chunk logic...
   let chunk = Chunk::new();
   let chunk_meshes = chunk.generate_mesh();
 
