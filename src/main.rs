@@ -1,10 +1,11 @@
 mod voxel_world;
-mod camera;
-
 use voxel_world::{Chunk};
+
+mod camera;
+use camera::GameCamera;
+
 use bevy::prelude::*;
-use rand::{rng, Rng, RngCore};
-use crate::camera::GameCamera;
+use rand::{rng, Rng};
 
 fn main() {
   println!("Starting application...");
@@ -13,6 +14,7 @@ fn main() {
   App::new()
     .add_plugins(DefaultPlugins)
     .add_systems(Startup, setup)
+    .add_systems(Update, camera::mouse_look_system)
     .run();
 }
 
@@ -22,8 +24,8 @@ fn setup(
   mut meshes: ResMut<Assets<Mesh>>
 ) {
   // Create the camera and borrow the commands variable to spawn it.
-  let camera = GameCamera::new(Vec3::new(25.0, 5.0, 50.0));
-  camera.spawn(&mut commands);
+  let camera = GameCamera::new();
+  camera.spawn(&mut commands, Vec3::new(25.0, 5.0, 50.0));
   
   // Test chunk logic...
   let chunk = Chunk::new();
