@@ -11,7 +11,7 @@ enum VoxelType {
   Grass = 2,
 }
 const CHUNK_SIZE: usize = 16; // 16x16x16 voxels per chunk
-
+  
 pub(crate) struct VoxelWorld {
   // Store only active chunks
   chunks: HashMap<(i32, i32), Chunk>, // Chunk location, Chunk struct.

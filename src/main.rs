@@ -2,8 +2,6 @@ mod voxel_world;
 use voxel_world::{Chunk};
 
 mod camera;
-mod entity_components;
-
 use camera::GameCamera;
 
 use bevy::prelude::*;
