@@ -1,10 +1,11 @@
  use std::f32::consts::PI;
-  use bevy::input::mouse::MouseMotion;
-  use bevy::prelude::*;
+ use bevy::input::mouse::MouseMotion;
+ use bevy::prelude::*;
 
  pub fn mouse_look_system(
     mut mouse_motion_events: EventReader<MouseMotion>,
-    mut camera_query: Query<(&mut Transform, &mut GameCamera)>) {
+    mut camera_query: Query<(&mut Transform, &mut GameCamera)>
+ ) {
    let sensitivity = 0.002; // TODO: Make this changeable in-game.
    let mut delta = Vec2::ZERO; // Delta between motion events.
 
@@ -41,6 +42,37 @@
    }
  }
 
+ pub fn keyboard_movement_system(
+   keyboard_input: Res<ButtonInput<KeyCode>>,
+   mut camera_query: Query<(&mut Transform, &mut GameCamera)>,
+   time: Res<Time>
+ ) {
+   let mut speed = 25.0;
+   if keyboard_input.pressed(KeyCode::ShiftLeft) { speed *= 2.0 }
+
+   for (mut transform, _camera) in camera_query.iter_mut() {
+
+     // Get camera's movement directions.
+     let forward = transform.rotation * Vec3::Z; // Forward is negative Z in Bevy
+     let right = transform.rotation * Vec3::X;
+     let up = Vec3::Y; // World up vector
+
+     // Calculate camera movement direction.
+     let mut direction = Vec3::ZERO;
+
+     if keyboard_input.pressed(KeyCode::KeyW) { direction -= forward; }
+     if keyboard_input.pressed(KeyCode::KeyS) { direction += forward; }
+     if keyboard_input.pressed(KeyCode::KeyA) { direction -= right; }
+     if keyboard_input.pressed(KeyCode::KeyD) { direction += right; }
+     if keyboard_input.pressed(KeyCode::Space) { direction += up; }
+     if keyboard_input.pressed(KeyCode::ControlLeft) { direction -= up; }
+
+     if direction.length() > 0.0 { direction = direction.normalize(); }
+
+     transform.translation += direction * speed * time.delta_secs();
+   }
+ }
+ 
  // Camera marker tag.
  #[derive(Component, Clone)]
   pub struct GameCamera;

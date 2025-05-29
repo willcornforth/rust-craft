@@ -2,6 +2,8 @@ mod voxel_world;
 use voxel_world::{Chunk};
 
 mod camera;
+mod world;
+
 use camera::GameCamera;
 
 use bevy::prelude::*;
@@ -14,7 +16,10 @@ fn main() {
   App::new()
     .add_plugins(DefaultPlugins)
     .add_systems(Startup, setup)
-    .add_systems(Update, camera::mouse_look_system)
+    .add_systems(Update, (
+      camera::mouse_look_system,
+      camera::keyboard_movement_system
+    ))
     .run();
 }
 
