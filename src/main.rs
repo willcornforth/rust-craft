@@ -2,6 +2,8 @@ mod voxel_world;
 use voxel_world::{Chunk};
 
 mod camera;
+mod entity_components;
+
 use camera::GameCamera;
 
 use bevy::prelude::*;
@@ -18,15 +20,11 @@ fn main() {
     .run();
 }
 
-fn setup(
-  mut commands: Commands,
-  mut materials: ResMut<Assets<StandardMaterial>>,
-  mut meshes: ResMut<Assets<Mesh>>
+fn test_chunk_logic(
+  commands: &mut Commands,
+  materials: &mut ResMut<Assets<StandardMaterial>>,
+  meshes: &mut ResMut<Assets<Mesh>>
 ) {
-  // Create the camera and borrow the commands variable to spawn it.
-  let camera = GameCamera::new();
-  camera.spawn(&mut commands, Vec3::new(25.0, 5.0, 50.0));
-  
   // Test chunk logic...
   let chunk = Chunk::new();
   let chunk_meshes = chunk.generate_mesh();
@@ -50,4 +48,18 @@ fn setup(
       Transform::from_translation(position),
     ));
   }
+}
+
+fn setup(
+  mut commands: Commands,
+  mut materials: ResMut<Assets<StandardMaterial>>,
+  mut meshes: ResMut<Assets<Mesh>>
+) {
+  test_chunk_logic(&mut commands, &mut materials, &mut meshes);
+
+  // Create the camera and borrow the commands variable to spawn it.
+  let camera = GameCamera::new();
+
+  camera.spawn(&mut commands, Transform::from_translation(Vec3::new(0.0, 0.0, 100.0))
+    .looking_at(Vec3::new(0.0, 0.0, 0.0), Vec3::Y));
 }
